@@ -1,20 +1,11 @@
+using Plots
+
+n, m = 100, 100 # Game board dimensions
+T = 1000 # time steps
 
 
-
-
-n, m = 10, 10 # Game board dimensions
 GameBoard = zeros(Int8, n ,m)
-initial = [0 0 0 0 0 0 0 0 0 0;
-           0 0 0 0 0 0 0 0 0 0;
-           0 0 0 0 0 0 0 0 0 0;
-           0 0 0 0 1 0 0 0 0 0;
-           0 0 0 0 1 1 1 0 0 0;
-           0 0 0 0 1 0 0 0 0 0;
-           0 0 0 0 0 0 0 0 0 0;
-           0 0 0 0 0 0 0 0 0 0;
-           0 0 0 0 0 0 0 0 0 0;
-           0 0 0 0 0 0 0 0 0 0;]
-
+GameBoard[CartesianIndex.([44,45,46,45,45,46,47, 15,16,17,16,16,15],[44,44,44,46,47,45,45, 69,69,69,71,72,72])] .= 1
 
 function convolution(arry::Array, n::Int64, m::Int64, kernel::Array)
     paddedArry = zeros(Int8, n+2,m+2)
@@ -69,10 +60,11 @@ function updateBoard(GameBoard::Array, n::Int64, m::Int64)
     return newBoard
 end
 
-b = initial
-for i = 1:10
-    global b = updateBoard(b, 10 ,10)
-    display(b)
-end
+b = GameBoard
+p = heatmap(title="Conway's Game of Life", colorbar=false, legend=false, grid=true,)
 
-#print(convolution([1 2 3; 4 5 6], 2, 3, [1 1 1; 1 1 1; 1 1 1]))
+for i = 1:T
+    global b = updateBoard(b, n, m)
+    heatmap!(p, b)
+    display(p)
+end
